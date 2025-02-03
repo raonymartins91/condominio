@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+
+class AddResidentsToUsers extends Migration
+{
+    public function up()
+    {
+       $this->forge->addColumn('users',[
+            'resident_id' => [
+                'type'   => 'INT',
+                'constraint'   => 11,
+                'unsigned'   => true,
+                'null'   => true,
+                'default'   => null,
+
+            ]
+
+       ]);
+       
+       $sql = "ALTER TABLE users ADD CONSTRAINT users_residents_id_foreing
+       FOREIGN KEY (resident_id) REFERENCES residents(id)
+       ON DELETE CASCADE ON UPDATE CASCADE";
+
+       $this->db->simpleQuery($sql);
+
+    }
+
+    public function down()
+    {
+       $this->forge->dropForeignKey('users', 'users_residents_id_foreing');
+       $this->forge->addColumn('users', 'resident_id');
+    }
+}
